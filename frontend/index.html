@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f5f0">
+  <meta name="description" content="A simple workout journal that remembers the weight you lifted last time.">
+  <title>Setlist — remember your last rep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Setlist home"><span class="brand-mark">S</span><span>setlist<span class="brand-dot">.</span></span></a>
+      <div class="topbar-note"><span class="live-dot"></span> Your training, remembered</div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-line"></span> YOUR PERSONAL LIFT LOG</p>
+          <h1>Show up.<br><span>Pick up where you left off.</span></h1>
+          <p class="hero-subtitle">No more guessing what you lifted last week. Every set, right where you need it.</p>
+          <a class="hero-link" href="#log-form">Log today's session <span aria-hidden="true">↓</span></a>
+        </div>
+        <aside class="hero-card" aria-label="Your training snapshot">
+          <div class="card-head"><span>TRAINING SNAPSHOT</span><span class="sparkle">✳</span></div>
+          <p class="snapshot-number" id="total-sets">—</p>
+          <p class="snapshot-label">sets in your log</p>
+          <div class="snapshot-divider"></div>
+          <p class="snapshot-caption">Small steps add up.<br><strong>Keep your momentum.</strong></p>
+          <div class="mini-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </aside>
+        <div class="hero-orbit" aria-hidden="true"></div>
+      </section>
+
+      <section class="workspace" aria-label="Workout set tracker">
+        <div class="form-panel" id="log-form">
+          <div class="section-title-row">
+            <div><p class="eyebrow muted">THE DETAILS</p><h2 id="form-title">Log a set</h2></div>
+            <span class="step-tag" id="form-mode">NEW ENTRY</span>
+          </div>
+          <p class="form-intro">Capture it while it’s fresh. Future you says thanks.</p>
+          <form id="set-form" novalidate>
+            <label for="exercise">Exercise <span class="required">*</span></label>
+            <input id="exercise" name="exercise" maxlength="80" required placeholder="e.g. Barbell squat" autocomplete="off">
+            <div class="field-grid">
+              <div><label for="weight">Weight <span class="required">*</span></label><div class="input-suffix"><input id="weight" name="weight" type="number" min="0" max="2000" step="0.5" required placeholder="60"><span>kg</span></div></div>
+              <div><label for="reps">Reps <span class="required">*</span></label><input id="reps" name="reps" type="number" min="1" max="1000" step="1" required placeholder="8"></div>
+            </div>
+            <label for="performed_on">Workout date <span class="required">*</span></label>
+            <input id="performed_on" name="performed_on" type="date" required>
+            <label for="notes">Note <span class="optional">OPTIONAL</span></label>
+            <textarea id="notes" name="notes" rows="2" maxlength="240" placeholder="How did it feel? Any cues to remember?"></textarea>
+            <div class="form-actions"><button class="primary-button" id="submit-button" type="submit"><span>Save set</span><span aria-hidden="true">↗</span></button><button class="text-button hidden" id="cancel-edit" type="button">Cancel edit</button></div>
+            <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="history-panel">
+          <div class="history-heading">
+            <div><p class="eyebrow muted">THE PAPER TRAIL</p><h2>Your history <span class="count-pill" id="history-count">0</span></h2></div>
+            <div class="history-controls"><label class="sr-only" for="filter-exercise">Filter history by exercise</label><input id="filter-exercise" class="filter-input" type="search" placeholder="Filter exercise…"></div>
+          </div>
+          <div class="loading-state" id="loading-state"><span class="spinner"></span><span>Finding your last session…</span></div>
+          <div class="error-banner hidden" id="error-banner" role="alert"></div>
+          <div class="empty-state hidden" id="empty-state"><span class="empty-icon">↗</span><h3>Your next PR starts here.</h3><p>No sets logged yet. Add your first one and build a history worth coming back to.</p><button class="text-button" id="empty-cta" type="button">Log the first set <span aria-hidden="true">↑</span></button></div>
+          <div class="set-list" id="set-list" aria-live="polite"></div>
+          <p class="history-footnote"><span class="lock-icon">◈</span> Your entries are stored for the next time you train.</p>
+        </div>
+      </section>
+      <footer class="footer"><span>SETLIST <span class="brand-dot">.</span></span><span>Consistency beats guesswork.</span><a href="#top">BACK TO TOP ↑</a></footer>
+    </main>
+  </div>
+  <dialog id="delete-dialog" class="confirm-dialog"><form method="dialog"><p class="eyebrow muted">ONE QUICK CHECK</p><h2>Remove this set?</h2><p>This entry will be removed from your workout history.</p><div class="dialog-actions"><button class="text-button" value="cancel">Keep it</button><button class="danger-button" id="confirm-delete" value="confirm">Delete set</button></div></form></dialog>
+</body>
+</html>
