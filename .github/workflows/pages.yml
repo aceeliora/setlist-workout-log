@@ -1,7 +1,7 @@
 name: Deploy frontend to GitHub Pages
 on:
   push:
-    branches: [main]
+    branches: [main, crud-ship]
   workflow_dispatch:
 permissions:
   contents: read

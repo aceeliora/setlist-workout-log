@@ -8,3 +8,5 @@ node_modules/
 backend/data/
 .DS_Store
 coverage/
+demo/
+*.mp4

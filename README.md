@@ -4,22 +4,25 @@
 Setlist is a small workout journal for logging exercise sets, weights, reps, dates, and notes so you can pick up where you left off.
 
 ## The Problem It Solves
-I kept forgetting the weight I used in my last gym session and had to guess where to start the next time. Setlist stores each set in a persistent database, so I can check my history and know what to lift next.
+The workout scenario in this assignment is easy to picture: after a week away, you may not remember the weight or reps from the last session, so the next workout starts with a guess. Setlist records each set in SQLite so those numbers are easy to look up when you return.
 
 ## What I Intentionally Excluded
-- **User accounts and authentication:** this MVP is designed as a single-user learning project; identity, password storage, and session/JWT security would add a separate security surface. Do not store sensitive information in this public demo.
+- **User accounts and authentication:** this MVP is designed as a single-user learning project; identity, password storage, and session/JWT security would add a separate security surface. This public demo is not private—do not enter sensitive information.
 - **Workout programs and charts:** the central job is recording and recalling a set; a program builder or analytics dashboard would complicate the focused CRUD workflow.
 - **Multiple units:** weights are shown in kilograms for this first version to keep each entry and comparison unambiguous.
 
 ## Tech Stack
 - Backend: Node.js + Express + SQLite (`better-sqlite3`)
 - Frontend: Vanilla HTML, CSS, and JavaScript
-- Deployment target: Render (backend with a persistent disk) + GitHub Pages (frontend)
+- Frontend hosting: GitHub Pages
+- Backend hosting: current public sandbox-forwarded API for the assignment demo; `render.yaml` configures a Render service with a persistent disk for a durable deployment.
 
 ## Live Deployment
-- **Frontend:** Pending deployment. The GitHub Pages workflow is configured; add the Render API URL to `frontend/config.js` before publishing.
-- **Backend:** Pending Render service creation. The blueprint mounts `/var/data` and stores SQLite at `/var/data/workouts.db`.
-- **Health check:** `GET /health` returns `{ "status": "ok" }`.
+- **Frontend:** https://aceeliora.github.io/setlist-workout-log/
+- **Backend:** https://3000-icbigmcffaw7jh3s1zatc-d8416404.sg2.manus.computer
+- **Health check:** https://3000-icbigmcffaw7jh3s1zatc-d8416404.sg2.manus.computer/health returns `{ "status": "ok" }`.
+
+**Hosting note:** the API link above is a temporary public sandbox-forwarded service, not a Render service. It is useful for the live demo while this sandbox environment is retained, but it is not independent durable hosting. The SQLite database is stored on the sandbox filesystem. For long-term use, deploy the backend using the included Render blueprint with a persistent disk mounted at `/var/data`; SQLite on ephemeral storage is lost when a service is redeployed. A Render account/session is needed to create that service.
 
 ## Data model and CRUD
 A set has an exercise name, weight in kilograms, reps, workout date, and optional note.
@@ -31,7 +34,7 @@ A set has an exercise name, weight in kilograms, reps, workout date, and optiona
 | Update | `PUT /sets/:id` | Correct an existing set |
 | Delete | `DELETE /sets/:id` | Remove a mistaken or unwanted set |
 
-The separate `GET /health` route is used by the deployment platform to check service availability.
+The separate `GET /health` route is used to check service availability.
 
 ## Run locally
 
@@ -42,7 +45,7 @@ npm install
 npm start
 ```
 
-Open `frontend/index.html` through a local static server (for example, `python3 -m http.server 8080 --directory frontend`) while the API runs on `http://localhost:3000`. The frontend defaults to that local URL in `frontend/config.js`.
+Open `frontend/index.html` through a local static server (for example, `python3 -m http.server 8080 --directory frontend`) while the API runs on `http://localhost:3000`. For local testing, change `window.SETLIST_API_BASE` in `frontend/config.js` to `http://localhost:3000`.
 
 ## Verify the API
 
@@ -55,9 +58,7 @@ The test suite exercises health, create, read, update, delete, validation failur
 
 ## Deploy
 
-1. Create a Render Web Service from this repository using root directory `backend`, build command `npm install`, start command `npm start`, and health-check path `/health`.
-2. Attach a persistent disk mounted at `/var/data` and set `DATABASE_PATH=/var/data/workouts.db`. SQLite on an ephemeral filesystem will be lost on redeploy, so the disk is required for persistent production data. Set `FRONTEND_ORIGIN` to the GitHub Pages URL.
-3. Replace `window.SETLIST_API_BASE` in `frontend/config.js` with the Render service URL, then push to `main` to deploy the Pages workflow.
+The frontend is deployed from the `frontend` directory by `.github/workflows/pages.yml`. For a durable backend deployment, create a Render Web Service from this repository using root directory `backend`, build command `npm install`, start command `npm start`, and health-check path `/health`. Attach a persistent disk mounted at `/var/data` and set `DATABASE_PATH=/var/data/workouts.db`; set `FRONTEND_ORIGIN` to the GitHub Pages URL. Replace `window.SETLIST_API_BASE` in `frontend/config.js` with the Render service URL, then push to the deployment branch.
 
 ## Pull request
-The `crud-ship` branch contains this implementation. The PR description calls out the problem, deployment URLs, and that no `.env` file is committed.
+The `crud-ship` branch contains this implementation. The PR description calls out the problem, live demo URLs, and that no `.env` file is committed.
